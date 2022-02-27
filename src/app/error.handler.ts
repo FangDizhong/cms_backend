@@ -10,9 +10,17 @@ const errorHandler = (error: Error, ctx: Koa.Context) => {
       status = 400 // Bad Request
       message = "Username or password cannot be null!"
       break
-    case errorTypes.USER_EXISTS:
+    case errorTypes.USER_EXIST:
       status = 409 // Conflict
-      message = "User is already exists!"
+      message = "User already exists!"
+      break
+    case errorTypes.USER_NOT_EXIST:
+      status = 400 // param error
+      message = "User does not exist!"
+      break
+    case errorTypes.PASSWORD_NOT_CORRECT:
+      status = 400 // param error
+      message = "Password is not correct!"
       break
 
     default:

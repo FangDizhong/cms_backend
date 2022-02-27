@@ -1,15 +1,14 @@
 import Koa from "koa"
 import bodyParser from "koa-bodyparser"
 
-import userRouter from "../router/user.router"
 import { errorHandler } from "./error.handler"
+import { useRoutes } from "../router"
 
 const app = new Koa()
 
 // register middleware（in order）
 app.use(bodyParser())
-app.use(userRouter.routes())
-app.use(userRouter.allowedMethods())
+useRoutes(app)
 
 // listener
 app.on("error", errorHandler)

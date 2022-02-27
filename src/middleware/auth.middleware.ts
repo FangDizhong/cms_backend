@@ -1,9 +1,9 @@
 import * as Koa from "koa"
 import errorTypes from "../constants/error-types"
-import userService from "../service/user.service"
+import authService from "../service/user.service"
 import { md5password } from "../utils/password-handler"
 
-const verifyUser = async (ctx: Koa.Context, next: Koa.Next) => {
+const verifyLogin = async (ctx: Koa.Context, next: Koa.Next) => {
   const { name, password } = ctx.request.body
 
   // 1. verify not null
@@ -13,12 +13,18 @@ const verifyUser = async (ctx: Koa.Context, next: Koa.Next) => {
     return ctx.app.emit("error", error, ctx)
   }
 
-  // 2. verify unique
+  // 2. verify user exists
   // "as any[]" is to fix mysql2 ts error
-  const result = (await userService.getUserByName(name)) as any[]
+  const result = (await authService.getUserByName(name)) as any[]
+  const user = result[0]
+  if (!user) {
+    const error = new Error(errorTypes.USER_NOT_EXIST)
+    return ctx.app.emit("error", error, ctx)
+  }
 
-  if (result.length) {
-    const error = new Error(errorTypes.USER_EXIST)
+  // 3. verify password(encryption)
+  if (md5password(password) !== user.password) {
+    const error = new Error(errorTypes.PASSWORD_NOT_CORRECT)
     return ctx.app.emit("error", error, ctx)
   }
 
@@ -32,4 +38,4 @@ const handlePassword = async (ctx: Koa.Context, next: Koa.Next) => {
   await next()
 }
 
-export { verifyUser, handlePassword }
+export { verifyLogin, handlePassword }
