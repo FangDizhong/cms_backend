@@ -9,8 +9,8 @@ node_modules
 .env.*.local
 
 # keys
-/keys
-.key
+/keys/
+*.key
 
 # Log files
 npm-debug.log*
