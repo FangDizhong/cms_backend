@@ -62,7 +62,7 @@ pnpx commitizen init cz-conventional-changelog --save-dev --save-exact
 6. commitlint
 
 ```
-npm i @commitlint/config-conventional @commitlint/cli -D
+pnpm i @commitlint/config-conventional @commitlint/cli -D
 ```
 
 ```commitlint.config.js
@@ -78,4 +78,11 @@ module.exports = {
 
 # 用于拦截不规范的git commit -m "<不规范message>"
 npx --no-install commitlint --edit
+```
+
+7. Koa-plugin
+
+```
+pnpm install jsonwebtoken
+pnpm i -D @types/jsonwebtoken
 ```

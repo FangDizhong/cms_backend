@@ -1,8 +1,8 @@
-import * as Koa from "koa"
+import type { Context, Next } from "koa"
 import userService from "../service/user.service"
 
 class UserController {
-  async create(ctx: Koa.Context, next: Koa.Next) {
+  async create(ctx: Context, next: Next) {
     // 1 receive user's queryInfo
     const user = ctx.request.body
 

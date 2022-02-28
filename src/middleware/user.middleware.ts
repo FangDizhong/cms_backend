@@ -1,9 +1,9 @@
-import * as Koa from "koa"
+import type { Context, Next } from "koa"
 import errorTypes from "../constants/error-types"
 import userService from "../service/user.service"
 import { md5password } from "../utils/password-handler"
 
-const verifyUser = async (ctx: Koa.Context, next: Koa.Next) => {
+const verifyUser = async (ctx: Context, next: Next) => {
   const { name, password } = ctx.request.body
 
   // 1. verify not null
@@ -25,7 +25,7 @@ const verifyUser = async (ctx: Koa.Context, next: Koa.Next) => {
   await next()
 }
 
-const handlePassword = async (ctx: Koa.Context, next: Koa.Next) => {
+const handlePassword = async (ctx: Context, next: Next) => {
   const { password } = ctx.request.body
   ctx.request.body.password = md5password(password)
 

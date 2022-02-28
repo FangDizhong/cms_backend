@@ -1,11 +1,12 @@
 import Router from "koa-router"
 import { authController } from "../controller/auth.controller"
-import { verifyLogin, handlePassword } from "../middleware/auth.middleware"
+import { verifyLogin, verifyAuth } from "../middleware/auth.middleware"
 
 const authRouter = new Router()
 
 // http request with a bunch of middlewares
-authRouter.post("/login", verifyLogin, handlePassword, authController.login)
+authRouter.post("/login", verifyLogin, authController.login)
+authRouter.get("/test", verifyAuth, authController.success)
 
 export = authRouter
 // dynamic import in this case:
