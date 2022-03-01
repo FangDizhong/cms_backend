@@ -27,6 +27,10 @@ const errorHandler = (error: Error, ctx: Context) => {
       status = 401 // Unauthorized
       message = "user is not authorized!"
       break
+    case errorTypes.NOT_AUTHORIZED:
+      status = 401 // Unauthorized
+      message = "Your action is not authorized!"
+      break
 
     default:
       status = 404

@@ -3,9 +3,10 @@ import jwt from "jsonwebtoken"
 import type { Context, Next } from "koa"
 
 import errorTypes from "../constants/error-types"
-import authService from "../service/user.service"
+import userService from "../service/user.service"
 import { md5password } from "../utils/password-handler"
 import config from "../app/config"
+import authService from "../service/auth.service"
 
 const verifyLogin = async (ctx: Context, next: Next) => {
   const { name, password } = ctx.request.body
@@ -19,7 +20,7 @@ const verifyLogin = async (ctx: Context, next: Next) => {
 
   // 2. verify user exists
   // "as any[]" is to fix mysql2 ts error
-  const result = (await authService.getUserByName(name)) as any[]
+  const result = (await userService.getUserByName(name)) as any[]
   const user = result[0]
   if (!user) {
     const error = new Error(errorTypes.USER_NOT_EXIST)
@@ -37,11 +38,13 @@ const verifyLogin = async (ctx: Context, next: Next) => {
   await next()
 }
 
-const verifyAuth = async (ctx: Context, next: Next) => {
-  console.log("verifyAuth middleware")
-
+const verifyToken = async (ctx: Context, next: Next) => {
   // 1. get token
   const authorization = ctx.headers.authorization
+  if (!authorization) {
+    const error = new Error(errorTypes.USER_NOT_AUTHORIZED)
+    return ctx.app.emit("error", error, ctx)
+  }
   const token = authorization!.replace("Bearer ", "")
 
   // 2. verify token
@@ -50,12 +53,36 @@ const verifyAuth = async (ctx: Context, next: Next) => {
       algorithms: ["RS256"]
     })
     ctx.user = result
+
+    await next()
   } catch (err) {
     const error = new Error(errorTypes.USER_NOT_AUTHORIZED)
     ctx.app.emit("error", error, ctx)
   }
-
-  await next()
 }
 
-export { verifyLogin, verifyAuth }
+/**
+ * "update / delete" action
+ * service api : user = user
+ * cms api : user(1) v role(1)  role(n) v menu(n) "CRUD"
+ */
+const verifyAuth = async (ctx: Context, next: Next) => {
+  // 1. get momentID & userID
+  const momentID = ctx.params.momentID
+  const userID = ctx.user.id
+
+  // 2. verify moment Auth
+  // the "err" catched here is from error thrown nearby
+  try {
+    const isAuthorized = await authService.verifyMomentAuth(momentID, userID)
+
+    if (!isAuthorized) throw new Error()
+
+    await next()
+  } catch (err) {
+    const error = new Error(errorTypes.NOT_AUTHORIZED)
+    return ctx.app.emit("error", error, ctx)
+  }
+}
+
+export { verifyLogin, verifyToken, verifyAuth }

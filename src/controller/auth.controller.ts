@@ -26,5 +26,4 @@ class AuthController {
   }
 }
 
-const authController = new AuthController()
-export { authController }
+export = new AuthController()

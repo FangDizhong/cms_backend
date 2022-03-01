@@ -20,4 +20,4 @@ connection.getConnection((err, conn) => {
   })
 })
 
-export default connection.promise()
+export = connection.promise()

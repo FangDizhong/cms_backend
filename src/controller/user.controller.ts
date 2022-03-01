@@ -14,5 +14,4 @@ class UserController {
   }
 }
 
-const userController = new UserController()
-export default userController
+export = new UserController()
