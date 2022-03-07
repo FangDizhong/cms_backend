@@ -18,6 +18,13 @@ updateAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 
 INSERT INTO comment (content, moment_id, user_id,comment_id) VALUES (?,?,?,?);
 
+SELECT
+  c.id, c.content,c.comment_id commentID, c.createAt,c.updateAt,
+  JSON_OBJECT('id',u.id,'name',u.name) user
+FROM comment c
+LEFT JOIN user u ON u.id=c.user_id
+WHERE moment_id = ?;
+
 UPDATE comment SET content = ? WHERE id = ?;
 
 DELETE FROM comment WHERE id = ?;

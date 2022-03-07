@@ -27,11 +27,24 @@ class MomentService {
 
   async getMomentList(offset: number, size: number) {
     const statement = `
-    ${GET_MOMENT_SQL}
-      Limit ?,?;`
-    const [result] = await connection.execute(statement, [offset, size])
+    SELECT
+      m.id id, m.content content, m.createAt createAt, m.updateAt updateAt,
+      JSON_OBJECT('id',u.id,'name',u.name) author,
+      (SELECT COUNT(*) FROM comment c WHERE c.moment_id = m.id) commentCount
+    FROM moment m
+    LEFT JOIN user u ON m.user_id = u.id
+    Limit ?,?;`
 
-    return result
+    // convert offset & size into string again because mysql2 type bug
+    try {
+      const [result] = await connection.execute(statement, [
+        offset.toString(),
+        size.toString()
+      ])
+      return result
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   async updateMomentByID(momentID: number, content: string) {

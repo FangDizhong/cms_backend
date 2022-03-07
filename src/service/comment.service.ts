@@ -18,9 +18,23 @@ class CommentService {
     return result
   }
 
+  async getCommentList(momentID: number) {
+    const statement = `
+    SELECT
+      c.id, c.content,c.comment_id commentID, c.createAt,c.updateAt,
+      JSON_OBJECT('id',u.id,'name',u.name) user
+    FROM comment c
+    LEFT JOIN user u ON u.id=c.user_id
+    WHERE moment_id = ?;`
+    const [result] = await connection.execute(statement, [momentID])
+
+    return result
+  }
+
   async updateCommentByID(commentID: number, content: string) {
     const statement = `UPDATE comment SET content = ? WHERE id = ?;`
     const [result] = await connection.execute(statement, [content, commentID])
+
     return result
   }
 

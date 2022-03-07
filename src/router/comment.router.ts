@@ -5,6 +5,7 @@ import { verifyToken, verifyAuth } from "../middleware/auth.middleware"
 const commentRouter = new Router({ prefix: "/moment/:momentID/comment" })
 
 commentRouter.post("/", verifyToken, commentController.create)
+commentRouter.get("/", commentController.getList)
 commentRouter.patch(
   "/:commentID",
   verifyToken,

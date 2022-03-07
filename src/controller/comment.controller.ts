@@ -16,6 +16,12 @@ class CommentController {
     ctx.body = result
   }
 
+  async getList(ctx: Context, next: Next) {
+    const momentID = ctx.params.momentID
+    const result = await commentService.getCommentList(momentID)
+    ctx.body = result
+  }
+
   async updateComment(ctx: Context, next: Next) {
     const commentID = ctx.params.commentID
     const { content } = ctx.request.body
