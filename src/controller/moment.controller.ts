@@ -3,7 +3,7 @@ import momentService from "../service/moment.service"
 
 class MomentController {
   async create(ctx: Context, next: Next) {
-    // 1 receive {user_id, content}
+    // 1 receive {userID, content}
     const userID = ctx.user.id
     const content = ctx.request.body.content
 
@@ -50,7 +50,7 @@ class MomentController {
     const content = ctx.request.body.content
 
     // 2 update moment content
-    const result = await momentService.updateMomentByID(content, momentID)
+    const result = await momentService.updateMomentByID(momentID, content)
 
     ctx.body = result
   }

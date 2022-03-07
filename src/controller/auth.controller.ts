@@ -22,7 +22,7 @@ class AuthController {
   }
 
   async success(ctx: Context, next: Next) {
-    ctx.body = "VerifyAuth success!"
+    ctx.body = "verifyToken success!"
   }
 }
 

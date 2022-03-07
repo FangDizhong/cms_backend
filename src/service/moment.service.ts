@@ -34,7 +34,7 @@ class MomentService {
     return result
   }
 
-  async updateMomentByID(content: string, momentID: number) {
+  async updateMomentByID(momentID: number, content: string) {
     const statement = `UPDATE moment SET content = ? WHERE id = ?;`
     const [result] = await connection.execute(statement, [content, momentID])
     return result

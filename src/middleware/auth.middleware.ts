@@ -67,14 +67,23 @@ const verifyToken = async (ctx: Context, next: Next) => {
  * cms api : user(1) v role(1)  role(n) v menu(n) "CRUD"
  */
 const verifyAuth = async (ctx: Context, next: Next) => {
-  // 1. get momentID & userID
-  const momentID = ctx.params.momentID
+  // 1. get resourceName resourceID & userID
+  const paramKeys = Object.keys(ctx.params)
+  // in our restful design, resourceKey will be the last one of paramKeys
+  const resourceKey = paramKeys[paramKeys.length - 1]
+  console.log(resourceKey)
+  const resourceName = resourceKey.replace("ID", "")
+  const resourceID = ctx.params[resourceKey]
   const userID = ctx.user.id
 
   // 2. verify moment Auth
   // the "err" catched here is from error thrown nearby
   try {
-    const isAuthorized = await authService.verifyMomentAuth(momentID, userID)
+    const isAuthorized = await authService.verifyResourceAuth(
+      resourceName,
+      resourceID,
+      userID
+    )
 
     if (!isAuthorized) throw new Error()
 
