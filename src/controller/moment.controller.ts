@@ -24,21 +24,18 @@ class MomentController {
     ctx.body = result
   }
 
-  async getList(ctx: Context, next: Next) {
+  async getMoments(ctx: Context, next: Next) {
     // 1 receive ?offset= &size=
     // `Array.isArray(x)? x[0] :x ` is to fix koa ts error about "string[]"
-    const offset = Array.isArray(ctx.query.offset)
-      ? ctx.query.offset[0]
-      : ctx.query.offset
-    const size = Array.isArray(ctx.query.size)
-      ? ctx.query.size[0]
-      : ctx.query.size
+    // as string also can fix koa ts error about "string"
+    const offset = ctx.query.offset as string
+    const limit = ctx.query.limit as string
 
     // 2 query Database
     // `parseInt(x || "") ` is to fix koa ts error about "string | undefined" into number
     const result = await momentService.getMomentList(
       parseInt(offset || ""),
-      parseInt(size || "")
+      parseInt(limit || "")
     )
 
     ctx.body = result

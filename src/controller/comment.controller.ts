@@ -16,9 +16,9 @@ class CommentController {
     ctx.body = result
   }
 
-  async getList(ctx: Context, next: Next) {
+  async getCommentsForMoment(ctx: Context, next: Next) {
     const momentID = ctx.params.momentID
-    const result = await commentService.getCommentList(momentID)
+    const result = await commentService.getCommentsByMomentID(momentID)
     ctx.body = result
   }
 

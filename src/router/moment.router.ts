@@ -6,7 +6,7 @@ const momentRouter = new Router({ prefix: "/moment" })
 
 // http request with a bunch of middlewares
 momentRouter.post("/", verifyToken, momentController.create)
-momentRouter.get("/", momentController.getList)
+momentRouter.get("/", momentController.getMoments)
 momentRouter.get("/:momentID", momentController.getDetail)
 momentRouter.patch(
   "/:momentID",

@@ -18,7 +18,7 @@ class CommentService {
     return result
   }
 
-  async getCommentList(momentID: number) {
+  async getCommentsByMomentID(momentID: number) {
     const statement = `
     SELECT
       c.id, c.content,c.comment_id commentID, c.createAt,c.updateAt,

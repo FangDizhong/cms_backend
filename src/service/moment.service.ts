@@ -25,12 +25,13 @@ class MomentService {
     return result[0]
   }
 
-  async getMomentList(offset: number, size: number) {
+  async getMomentList(offset: number, limit: number) {
     const statement = `
     SELECT
       m.id id, m.content content, m.createAt createAt, m.updateAt updateAt,
       JSON_OBJECT('id',u.id,'name',u.name) author,
-      (SELECT COUNT(*) FROM comment c WHERE c.moment_id = m.id) commentCount
+      (SELECT COUNT(*) FROM comment c WHERE c.moment_id = m.id) commentCount,
+      (SELECT COUNT(*) FROM moment_label ml WHERE ml.moment_id = m.id) labelCount
     FROM moment m
     LEFT JOIN user u ON m.user_id = u.id
     Limit ?,?;`
@@ -39,7 +40,7 @@ class MomentService {
     try {
       const [result] = await connection.execute(statement, [
         offset.toString(),
-        size.toString()
+        limit.toString()
       ])
       return result
     } catch (error) {
